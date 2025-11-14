@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gota Vermelha - Salve Vidas</title>
+    <style>
+
+        :root {
+            --primary-color: #e2230a;
+            --secondary-color: #880202;
+            --text-color: #333;
+            --white: #fff;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 1rem 0;
+            box-shadow: var(--shadow);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            margin-left: 10px;
+        }
+        
+        .logo-icon {
+            font-size: 2rem;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        
+        nav ul li a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+        
+        nav ul li a:hover {
+            opacity: 0.8;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--white);
+            color: var(--primary-color);
+            padding: 0.7rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-light);
+            color: var(--white);
+        }
+        
+
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
+            background-size: cover;
+            background-position: center;
+            color: var(--white);
+            padding: 5rem 0;
+            text-align: center;
+        }
+        
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+        
+        .btn-hero {
+            background-color: var(--primary-color);
+            color: var(--white);
+            font-size: 1.1rem;
+            padding: 0.9rem 2rem;
+        }
+        
+        .btn-hero:hover {
+            background-color: var(--primary-dark);
+        }
+        
+
+        section {
+            padding: 4rem 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--primary-color);
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 3px;
+            background-color: var(--primary-color);
+            margin: 10px auto;
+        }
+        
+
+        .requirements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .requirement-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+        
+        .requirement-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .requirement-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .requirement-card h3 i {
+            margin-right: 10px;
+        }
+        
+        .requirement-card ul {
+            list-style-type: none;
+        }
+        
+        .requirement-card ul li {
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .requirement-card ul li::before {
+            content: "•";
+            color: var(--primary-color);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        
+
+        .faq-item {
+            background-color: var(--white);
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        
+        .faq-question {
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+        
+        .faq-question:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .faq-answer {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s, padding 0.3s;
+        }
+        
+        .faq-item.active .faq-answer {
+            padding: 0 1.5rem 1.5rem;
+            max-height: 500px;
+        }
+        
+        .faq-toggle {
+            transition: transform 0.3s;
+        }
+        
+        .faq-item.active .faq-toggle {
+            transform: rotate(180deg);
+        }
+        
+
+        .cta {
+            background-color: var(--primary-color);
+            color: var(--white);
+            text-align: center;
+            padding: 4rem 0;
+        }
+        
+        .cta h2 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .cta p {
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+        
+        .btn-cta {
+            background-color: var(--white);
+            color: var(--primary-color);
+        }
+        
+
+        footer {
+            background-color: #333;
+            color: var(--white);
+            padding: 3rem 0 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 1rem;
+                justify-content: center;
+            }
+            
+            nav ul li {
+                margin: 0 0.5rem;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <h1>Doe Sangue</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="">Sobre</a></li>
+                    <li><a href="">Noticias</a></li>
+                    <li><a href="">Locais de doação</a></li>
+                    <li><a href="" class="btn">Login</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+
+    <section class="hero">
+        <div class="container">
+            <h2>Doe Sangue, Salve Vidas</h2>
+            <p>Uma única doação pode salvar até 4 vidas. Descubra se você pode ser um doador e agende sua doação hoje mesmo.</p>
+            <a href="" class="btn btn-hero">Agende agora mesmo!</a>
+        </div>
+    </section>
+
+
+    <section id="requisitos">
+        <div class="container">
+            <h2 class="section-title">Requisitos Básicos para Doação</h2>
+            <div class="requirements-grid">
+                <div class="requirement-card">
+                    <h3><i>✓</i> Requisitos Básicos</h3>
+                    <ul>
+                        <li>Estar em boas condições de saúde.</li>
+                        <li>Ter entre 16 e 69 anos (menores de 18 precisam de autorização).</li>
+                        <li>Pesar no mínimo 50kg.</li>
+                        <li>Estar descansado (ter dormido pelo menos 5 horas nas últimas 24 horas).</li>
+                        <li>Estar alimentado (evitar gordurosas nas 4 horas anteriores).</li>
+                        <li>Apresentar documento original com foto recente.</li>
+                    </ul>
+                </div>
+                
+                <div class="requirement-card">
+                    <h3><i>⏱️</i> Intervalos para Doação</h3>
+                    <ul>
+                        <li><strong>Homens:</strong> 60 dias (máximo de 4 doações nos últimos 12 meses)</li>
+                        <li><strong>Mulheres:</strong> 90 dias (máximo de 3 doações nos últimos 12 meses)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section id="impedimentos" style="background-color: #f9f9f9;">
+        <div class="container">
+            <h2 class="section-title">Impedimentos para Doação</h2>
+            <div class="requirements-grid">
+                <div class="requirement-card">
+                    <h3><i>⏳</i> Impedimentos Temporários</h3>
+                    <ul>
+                        <li>Resfriado: aguardar 7 dias após desaparecimento dos sintomas</li>
+                        <li>Gravidez</li>
+                        <li>90 dias após parto normal e 180 dias após cesariana</li>
+                        <li>Amamentação (se o parto ocorreu há menos de 12 meses)</li>
+                        <li>Ingestão de bebida alcoólica nas 12 horas anteriores</li>
+                        <li>Tatuagem, maquiagem definitiva: 6 meses (12 meses se local não seguro)</li>
+                        <li>Piercing: 6 meses (12 meses se em mucosa ou local não seguro)</li>
+                        <li>Risco de doenças sexualmente transmissíveis: aguardar 6 meses</li>
+                        <li>Procedimentos endoscópicos: aguardar 6 meses</li>
+                        <li>Extração dentária: 7 dias</li>
+                        <li>Vacina Covid-19: 7 dias</li>
+                        <li>Vacina contra gripe: 48 horas</li>
+                    </ul>
+                </div>
+                
+                <div class="requirement-card">
+                    <h3><i>🚫</i> Impedimentos Definitivos</h3>
+                    <ul>
+                        <li>Hepatite após os 11 anos de idade</li>
+                        <li>Hepatites B e C (qualquer idade)</li>
+                        <li>AIDS (vírus HIV)</li>
+                        <li>Doenças associadas aos vírus HTLV I e II</li>
+                        <li>Doença de Chagas</li>
+                        <li>Uso de drogas ilícitas injetáveis</li>
+                        <li>Doença de Parkinson</li>
+                    </ul>
+                </div>
+            </div>
+            <p style="text-align: center; margin-top: 2rem; font-style: italic;">
+                <strong>Importante:</strong> Esta lista não esgota os motivos de impedimentos. Outras informações prestadas durante a triagem clínica serão consideradas.
+            </p>
+        </div>
+    </section>
+
+
+    <section id="faq">
+        <div class="container">
+            <h2 class="section-title">Perguntas Frequentes</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Quanto tempo leva para o corpo repor o sangue doado?
+                        <span class="faq-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>O plasma é reposto em 24 horas. Os glóbulos vermelhos demoram cerca de 4 a 6 semanas para serem totalmente repostos.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        A doação de sangue dói?
+                        <span class="faq-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Apenas uma picada rápida, semelhante a um beliscão. O restante do processo é indolor.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Posso saber para quem meu sangue foi doado?
+                        <span class="faq-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Por lei, a doação é anônima e altruísta. Você não saberá quem recebeu, mas pode ter a certeza de que fez a diferença.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Quanto tempo dura todo o processo de doação?
+                        <span class="faq-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>O processo completo, desde o cadastro até o lanche pós-doção, leva aproximadamente 1 hora. A coleta em si dura entre 8 e 12 minutos.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="cta">
+        <div class="container">
+            <h2>Pronto para fazer a diferença?</h2>
+            <p>Verificou que atende aos requisitos? Agende sua doação agora e ajude a salvar vidas!</p>
+            <a href="#" class="btn btn-cta">Agendar Doação</a>
+        </div>
+    </section>
+
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Gota Vermelha</h3>
+                <p>Salvando vidas através da solidariedade e do compromisso com a saúde da nossa comunidade.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Informações</h3>
+                <ul>
+                    <li>📍 Av. Principal, 123 - Centro</li>
+                    <li>📞 (11) 3333-4000</li>
+                    <li>📧 contato@gotavermelha.org.br</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Gota Vermelha. Todos os direitos reservados.</p>
+            <p>Site desenvolvido com ❤️</p>
+        </div>
+    </footer>
+    
+</body>
+<script>
+
+    document.querySelectorAll('.faq-question').forEach(question => {
+        question.addEventListener('click', () => {
+            const item = question.parentNode;
+            item.classList.toggle('active');
+        });
+    });
+    
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+</script>
+</html>
+
