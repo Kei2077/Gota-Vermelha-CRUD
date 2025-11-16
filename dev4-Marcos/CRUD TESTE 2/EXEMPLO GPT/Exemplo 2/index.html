@@ -1,0 +1,18 @@
+<form action="cadastrar_doador.php" method="POST">
+    Nome: <input type="text" name="nome" required><br>
+    Email: <input type="email" name="email" required><br>
+    Telefone: <input type="text" name="telefone" required><br>
+    Tipo Sanguíneo: 
+    <select name="tipoSanguineo" required>
+        <option value="">Selecione</option>
+        <option value="A+">A+</option>
+        <option value="A-">A-</option>
+        <option value="B+">B+</option>
+        <option value="B-">B-</option>
+        <option value="AB+">AB+</option>
+        <option value="AB-">AB-</option>
+        <option value="O+">O+</option>
+        <option value="O-">O-</option>
+    </select><br>
+    <input type="submit" value="Cadastrar">
+</form>
