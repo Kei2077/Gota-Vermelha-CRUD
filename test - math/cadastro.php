@@ -207,7 +207,7 @@
       border: 1px solid var(--cor-erro);
     }
 
-    /* NOVOS ESTILOS PARA O INDICADOR DE SENHA */
+    
     .strength-meter {
       height: 6px;
       background-color: var(--cor-borda);
@@ -325,7 +325,7 @@
     
     <div id="alerta" class="alert"></div>
 
-    <form id="formCadastro" action="processa_cadastro.php" method="POST">
+    <form id="formCadastro" action="processacadastro.php" method="POST">
       <div class="form-group">
         <label for="nome">Nome Completo *</label>
         <input type="text" id="nome" name="nome" required placeholder="João da Silva">
@@ -423,7 +423,7 @@
       </div>
 
       <div class="form-group">
-        <label for="endereco">Endereço Completo *</label>
+        <label for="endereco">Endereço *</label>
         <input type="text" id="endereco" name="endereco" required placeholder="Rua, número, bairro, cidade - UF">
         <span class="error-message" id="erro-endereco"></span>
       </div>
