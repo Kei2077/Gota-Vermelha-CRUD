@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'conexão.php';
+include 'conexao.php';
 
 
 function limparDados($dados, $conn) {
