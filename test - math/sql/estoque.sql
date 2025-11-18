@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS bolsas (
 
 INSERT INTO bolsas VALUES 
 ('A+',5,'2025-12-31'),('A-',2,'2025-12-31'),
-('B+',3,'2025-12-15'),('O-',4,'2025-12-15');
+('B+',3,'2025-12-15'),('O-',4,'2025-12-15'),
+('AB+',3,'2025-12-15');
 
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -43,8 +44,10 @@ CREATE TABLE IF NOT EXISTS doacoes (
     INDEX idx_data (data_doacao)
 );
 
--- Dados de exemplo (substitua '1' pelo ID de um usuário real)
+DELETE from doacoes;
+
+
 INSERT INTO doacoes (usuario_id, data_doacao, local_doacao, quantidade_ml) VALUES
-(1, '2024-10-15', 'Hemocentro São Paulo', 450),
-(1, '2024-08-20', 'Hospital das Clínicas', 450),
-(1, '2024-06-10', 'Hemocentro São Paulo', 450);
+(1, '2025-10-15', 'Hemocentro de Mogi das Cruzes', 450),
+(1, '2025-08-20', 'Hemocentro de Mogi das Cruzes', 900),
+(1, '2025-06-10', 'Hemocentro de Mogi das Cruzes', 90000);
