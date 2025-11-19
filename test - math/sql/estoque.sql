@@ -37,17 +37,38 @@ CREATE TABLE IF NOT EXISTS doacoes (
     data_doacao DATE NOT NULL,
     local_doacao VARCHAR(255) NOT NULL,
     quantidade_ml INT DEFAULT 450,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
     INDEX idx_usuario (usuario_id),
     INDEX idx_data (data_doacao)
 );
 
-DELETE from doacoes;
+
 
 
 INSERT INTO doacoes (usuario_id, data_doacao, local_doacao, quantidade_ml) VALUES
 (1, '2025-10-15', 'Hemocentro de Mogi das Cruzes', 450),
 (1, '2025-08-20', 'Hemocentro de Mogi das Cruzes', 900),
 (1, '2025-06-10', 'Hemocentro de Mogi das Cruzes', 90000);
+select * from doacoes;
+delete from doacoes;
+CREATE TABLE IF NOT EXISTS agendamentos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    nome VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    telefone VARCHAR(11) NOT NULL,
+    cpf VARCHAR(11) NOT NULL,
+    unidade VARCHAR(250) NOT NULL,
+    data DATE NOT NULL,
+    hora VARCHAR(5) NOT NULL,
+    status ENUM('PENDENTE', 'CONFIRMADO', 'CANCELADO', 'REALIZADO') DEFAULT 'PENDENTE',
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+    INDEX idx_usuario (usuario_id),
+    INDEX idx_data (data)
+);
+DELETE from agendamentos;
+select * from agendamentos;

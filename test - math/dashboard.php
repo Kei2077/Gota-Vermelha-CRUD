@@ -34,7 +34,7 @@ $doacoes_sql = "SELECT
     data_doacao,
     local_doacao,
     quantidade_ml,
-    DATE_FORMAT(created_at, '%d/%m/%Y %H:%i') as criado
+    DATE_FORMAT(criado_em, '%d/%m/%Y %H:%i') as criado
     FROM doacoes 
     WHERE usuario_id = ? 
     ORDER BY data_doacao DESC 
@@ -49,6 +49,28 @@ if ($stmt) {
 } else {
     $doacoes = [];
     $erro_doacoes = "Erro ao buscar histórico: " . $conn->error;
+}
+
+// NOVA QUERY: Buscar agendamentos do usuário
+$agendamentos_sql = "SELECT 
+    id,
+    unidade,
+    data,
+    hora,
+    status,
+    DATE_FORMAT(criado_em, '%d/%m/%Y %H:%i') as criado
+    FROM agendamentos 
+    WHERE usuario_id = ? 
+    ORDER BY data ASC, hora ASC 
+    LIMIT 10";
+
+$agendamentos_stmt = $conn->prepare($agendamentos_sql);
+$agendamentos = [];
+if ($agendamentos_stmt) {
+    $agendamentos_stmt->bind_param("i", $_SESSION['usuario_id']);
+    $agendamentos_stmt->execute();
+    $agendamentos_result = $agendamentos_stmt->get_result();
+    $agendamentos = $agendamentos_result->fetch_all(MYSQLI_ASSOC);
 }
 
 $usuario_sql = "SELECT tipo_sanguineo, fator_rh FROM usuarios WHERE id = ?";
@@ -83,6 +105,9 @@ $conn->close();
       --cor-borda: #E5E7EB;
       --cor-sucesso: #10B981;
       --cor-erro: #EF4444;
+      --cor-pendente: #F59E0B;
+      --cor-cancelado: #6B7280;
+      --cor-realizado: #3B82F6;
       --sombra: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
       --raio-borda: 16px;
       --transicao: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -178,6 +203,23 @@ $conn->close();
       transform: translateY(-2px);
       box-shadow: 0 6px 12px rgba(239, 68, 68, 0.25);
     }
+    .btn-agendar {
+      background: linear-gradient(135deg, var(--cor-sucesso), #059669);
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: var(--transicao);
+      box-shadow: 0 4px 6px rgba(16, 185, 129, 0.15);
+      margin-right: 8px;
+    }
+    .btn-agendar:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(16, 185, 129, 0.25);
+    }
     .btn-refresh {
       background: linear-gradient(135deg, var(--cor-primaria), var(--cor-primaria-hover));
       color: white;
@@ -194,8 +236,6 @@ $conn->close();
     }
     .btn-refresh:hover { transform: scale(1.05); }
     .btn-refresh:active { transform: scale(0.98); }
-
-
     .info-painel {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -231,8 +271,6 @@ $conn->close();
       font-size: 24px !important;
       color: var(--cor-primaria) !important;
     }
-
-   
     .estoque-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -292,8 +330,6 @@ $conn->close();
       color: var(--cor-primaria);
       font-weight: 700;
     }
-
-  
     .tabela-historico {
       width: 100%;
       border-collapse: collapse;
@@ -319,8 +355,6 @@ $conn->close();
     .tabela-historico tr:hover {
       background: rgba(226, 35, 10, 0.02);
     }
-    
-    
     .badge-container {
       display: flex;
       flex-direction: column;
@@ -345,8 +379,43 @@ $conn->close();
       border-radius: 4px;
       border: 1px solid var(--cor-borda);
     }
-
-  
+    /* NOVOS BADGES PARA STATUS DE AGENDAMENTO */
+    .badge-pendente {
+      background: linear-gradient(135deg, var(--cor-pendente), #D97706);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-block;
+    }
+    .badge-confirmado {
+      background: linear-gradient(135deg, var(--cor-sucesso), #059669);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-block;
+    }
+    .badge-cancelado {
+      background: linear-gradient(135deg, var(--cor-cancelado), #4B5563);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-block;
+    }
+    .badge-realizado {
+      background: linear-gradient(135deg, var(--cor-realizado), #2563EB);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-block;
+    }
     .placeholder {
       text-align: center;
       padding: 60px 40px;
@@ -366,7 +435,6 @@ $conn->close();
       color: var(--cor-texto);
       font-weight: 600;
     }
-
     @media (max-width: 1024px) {
       .container { grid-template-columns: 1fr; }
     }
@@ -391,6 +459,7 @@ $conn->close();
             <?php echo htmlspecialchars($usuario_data['tipo_sanguineo'] . ($usuario_data['fator_rh'] === 'POSITIVO' ? '+' : '-')); ?>
           </div>
         </div>
+        <button class="btn-agendar" onclick="window.location.href='agendamento.php'">📅 Agendar Doação</button>
         <button class="btn-sair" onclick="window.location.href='logout.php'">Sair</button>
       </div>
     </div>
@@ -463,6 +532,45 @@ $conn->close();
       <p style="color: var(--cor-texto-secundario); font-size: 12px; margin-top: 24px; text-align: center;">
         <strong>Última atualização:</strong> <?php echo date('H:i:s - d/m/Y'); ?>
       </p>
+    </div>
+
+    <!-- AGENDAMENTOS - NOVA SEÇÃO -->
+    <div class="card" style="grid-column: 1 / -1;">
+      <h2>📅 Meus Agendamentos</h2>
+      
+      <?php if (count($agendamentos) > 0): ?>
+        <table class="tabela-historico">
+          <thead>
+            <tr>
+              <th>Data e Hora</th>
+              <th>Unidade</th>
+              <th>Status</th>
+              <th>Agendado em</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php foreach ($agendamentos as $agendamento): ?>
+              <tr>
+                <td><?php echo date('d/m/Y', strtotime($agendamento['data'])) . ' às ' . $agendamento['hora']; ?></td>
+                <td><?php echo htmlspecialchars($agendamento['unidade']); ?></td>
+                <td>
+                  <?php 
+                    $badge_class = 'badge-' . strtolower($agendamento['status']);
+                    echo '<span class="' . $badge_class . '">' . ucfirst($agendamento['status']) . '</span>';
+                  ?>
+                </td>
+                <td><?php echo $agendamento['criado']; ?></td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      <?php else: ?>
+        <div class="placeholder">
+          <div class="placeholder-icon">📅</div>
+          <h3>Você não tem agendamentos ativos</h3>
+          <p>Clique em "Agendar Doação" para marcar sua próxima doação.</p>
+        </div>
+      <?php endif; ?>
     </div>
 
     <!-- Histórico -->
