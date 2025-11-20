@@ -15,4 +15,18 @@
         <option value="O-">O-</option>
     </select><br>
     <input type="submit" value="Cadastrar">
+
+<script>
+    function atualizarEstatisticas() {
+        fetch('estatisticas.php')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('totalDoadores').textContent = data.totalDoadores;
+            document.getElementById('quantidadeSangue').textContent = data.quantidadeSangue.toFixed(1);
+        });
+    }
+    // Chama a função ao carregar a página
+    window.onload = atualizarEstatisticas;
+</script>
+
 </form>
