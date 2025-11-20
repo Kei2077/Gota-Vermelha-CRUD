@@ -45,14 +45,15 @@ CREATE TABLE IF NOT EXISTS doacoes (
 );
 
 
-
-
 INSERT INTO doacoes (usuario_id, data_doacao, local_doacao, quantidade_ml) VALUES
 (1, '2025-10-15', 'Hemocentro de Mogi das Cruzes', 450),
 (1, '2025-08-20', 'Hemocentro de Mogi das Cruzes', 900),
 (1, '2025-06-10', 'Hemocentro de Mogi das Cruzes', 90000);
+
 select * from doacoes;
 delete from doacoes;
+
+
 CREATE TABLE IF NOT EXISTS agendamentos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
@@ -72,3 +73,17 @@ CREATE TABLE IF NOT EXISTS agendamentos (
 );
 DELETE from agendamentos;
 select * from agendamentos;
+
+CREATE TABLE IF NOT EXISTS  usuariosADM (
+	id INT PRIMARY KEY auto_increment,
+    nome VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    senha VARCHAR(255) NOT NULL,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_email (email)
+);
+
+INSERT INTO usuariosADM (nome, email, senha) VALUES 
+('Admin Gota Vermelha', 'admin@gotavermelha.com', '$2y$10$6pgVuTIEM866XCBT/U.DGuzEBhUxyqzC2XLz2ZZrp49eyZ/yrRrbq');
+
+Select * from usuariosADM;

@@ -51,7 +51,6 @@ if ($stmt) {
     $erro_doacoes = "Erro ao buscar histórico: " . $conn->error;
 }
 
-// NOVA QUERY: Buscar agendamentos do usuário
 $agendamentos_sql = "SELECT 
     id,
     unidade,
@@ -464,7 +463,6 @@ $conn->close();
       </div>
     </div>
 
-    <!-- Métricas Gerais -->
     <div class="card">
       <h2>📈 Visão Geral</h2>
       <div class="info-painel">
@@ -534,7 +532,6 @@ $conn->close();
       </p>
     </div>
 
-    <!-- AGENDAMENTOS - NOVA SEÇÃO -->
     <div class="card" style="grid-column: 1 / -1;">
       <h2>📅 Meus Agendamentos</h2>
       
