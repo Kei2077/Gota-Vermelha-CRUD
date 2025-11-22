@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['logado'] = true;
             
             
-            header("Location: teste.html");
+            header("Location: dashboardADM.php");
             exit();
         } else {
             
