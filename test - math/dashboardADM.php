@@ -405,7 +405,7 @@ $conn->close();
       <span>📦</span> Estoque
     </a>
     <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--cor-borda);">
-    <a href="logout_adm.php" class="menu-item">
+    <a href="logout.php" class="menu-item">
       <span>🚪</span> Sair
     </a>
   </div>
@@ -420,7 +420,7 @@ $conn->close();
             <div style="font-weight: 600; font-size: 14px;">Administrador</div>
             <div style="font-size: 12px; opacity: 0.9;"><?php echo htmlspecialchars($_SESSION['adm_email'] ?? 'admin@gotavermelha.com'); ?></div>
           </div>
-          <button class="btn btn-sair" onclick="window.location.href='logout_adm.php'">Sair</button>
+          <button class="btn btn-sair" onclick="window.location.href='logout.php'">Sair</button>
         </div>
       </div>
 

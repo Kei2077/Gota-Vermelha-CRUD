@@ -1,7 +1,7 @@
 <?php
 include 'conexao.php';
 
-// Busca todos os tipos sanguíneos
+
 $result = $conn->query("SELECT 
     SUM(quantidade) as total,
     SUM(CASE WHEN tipo_sangue='A+' THEN quantidade ELSE 0 END) as a_pos,

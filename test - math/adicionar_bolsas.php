@@ -6,13 +6,13 @@ require_once 'conexao.php';
 $msg_sucesso = '';
 $msg_erro = '';
 
-// Processa formulário
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tipo_sangue = $_POST['tipo_sangue'];
     $quantidade = (int)$_POST['quantidade'];
     $data_validade = $_POST['data_validade'];
 
-    // Validações
+ 
     if (empty($tipo_sangue) || empty($quantidade) || empty($data_validade)) {
         $msg_erro = "⚠️ Todos os campos são obrigatórios!";
     } elseif ($quantidade <= 0) {
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($data_validade <= date('Y-m-d')) {
         $msg_erro = "❌ Data de validade deve ser futura!";
     } else {
-        // Verifica se já existe bolsas desse tipo com essa validade
+      
         $sql_check = "SELECT quantidade FROM bolsas WHERE tipo_sangue = ? AND data_validade = ?";
         $stmt = $conn->prepare($sql_check);
         $stmt->bind_param("ss", $tipo_sangue, $data_validade);
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-            // Já existe, atualiza quantidade
+ 
             $row = $result->fetch_assoc();
             $nova_quantidade = $row['quantidade'] + $quantidade;
             
@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $msg_erro = "❌ Erro ao atualizar estoque: " . $conn->error;
             }
         } else {
-            // Não existe, insere novo registro
+   
             $sql_insert = "INSERT INTO bolsas (tipo_sangue, quantidade, data_validade) VALUES (?, ?, ?)";
             $stmt_insert = $conn->prepare($sql_insert);
             $stmt_insert->bind_param("sis", $tipo_sangue, $quantidade, $data_validade);

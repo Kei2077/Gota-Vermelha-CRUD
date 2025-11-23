@@ -392,7 +392,7 @@ if (!$usuario) {
 
         <?php if (isset($_SESSION['agendamento_msg'])): ?>
         document.getElementById('alertBox').classList.add('show', 'alert-<?php echo $_SESSION['agendamento_tipo']; ?>');
-        // CORREÇÃO AQUI - Usar json_encode para escapar caracteres especiais
+  
         const mensagem = <?php echo json_encode($_SESSION['agendamento_msg']); ?>;
         document.getElementById('alertBox').textContent = mensagem;
         <?php unset($_SESSION['agendamento_msg'], $_SESSION['agendamento_tipo']); ?>
