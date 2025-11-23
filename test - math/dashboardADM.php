@@ -1,17 +1,16 @@
 <?php
-session_start();
 
 
 require_once 'conexao.php';
 
 
 $stats_sql = "
-    SELECT 
+        SELECT 
         (SELECT COUNT(*) FROM usuarios) as total_usuarios,
         (SELECT COUNT(*) FROM doacoes) as total_doacoes,
         (SELECT COALESCE(SUM(quantidade_ml), 0) FROM doacoes) as volume_total,
         (SELECT COUNT(*) FROM agendamentos WHERE status IN ('PENDENTE', 'CONFIRMADO')) as agendamentos_ativos,
-        (SELECT COUNT(*) FROM bolsas WHERE quantidade > 0 AND data_validade > CURDATE()) as bolsas_disponiveis
+        (SELECT COUNT(DISTINCT tipo_sangue) FROM bolsas WHERE quantidade > 0 AND data_validade > CURDATE()) as bolsas_disponiveis
 ";
 $stats_result = $conn->query($stats_sql);
 $stats = $stats_result ? $stats_result->fetch_assoc() : [];
@@ -24,8 +23,7 @@ $estoque_sql = "SELECT
     MIN(data_validade) as proxima_validade
     FROM bolsas
     WHERE quantidade > 0 AND data_validade > CURDATE()
-    GROUP BY tipo_sangue
-    ORDER BY tipo_sangue";
+    GROUP BY tipo_sangue";
 $estoque_result = $conn->query($estoque_sql);
 $estoque_detalhado = $estoque_result ? $estoque_result->fetch_all(MYSQLI_ASSOC) : [];
 
@@ -87,8 +85,8 @@ $conn->close();
   <style>
     :root {
       --cor-primaria: #E2230A;
-      --cor-primaria-hover: #C41E0A;
-      --cor-secundaria: #880202;
+      --cor-adm: #8B5CF6;
+      --cor-adm-hover: #7C3AED;
       --cor-fundo: linear-gradient(135deg, #F9F9F9 0%, #F3F4F6 100%);
       --cor-card: rgba(255, 255, 255, 0.95);
       --cor-texto: #1F2937;
@@ -97,9 +95,6 @@ $conn->close();
       --cor-sucesso: #10B981;
       --cor-erro: #EF4444;
       --cor-pendente: #F59E0B;
-      --cor-cancelado: #6B7280;
-      --cor-realizado: #3B82F6;
-      --cor-adm: #8B5CF6;
       --sombra: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
       --raio-borda: 16px;
       --transicao: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -140,7 +135,7 @@ $conn->close();
       gap: 16px;
       margin-bottom: 32px;
       grid-column: 1 / -1;
-      background: linear-gradient(135deg, var(--cor-adm), #7C3AED);
+      background: linear-gradient(135deg, var(--cor-adm), var(--cor-adm-hover));
       padding: 24px 32px;
       border-radius: var(--raio-borda);
       color: white;
@@ -205,7 +200,7 @@ $conn->close();
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     }
     .btn-primary {
-      background: linear-gradient(135deg, var(--cor-adm), #7C3AED);
+      background: linear-gradient(135deg, var(--cor-adm), var(--cor-adm-hover));
       color: white;
       box-shadow: 0 4px 6px rgba(139, 92, 246, 0.15);
     }
@@ -384,7 +379,7 @@ $conn->close();
       color: var(--cor-adm);
     }
     .menu-item.ativo {
-      background: linear-gradient(135deg, var(--cor-adm), #7C3AED);
+      background: linear-gradient(135deg, var(--cor-adm), var(--cor-adm-hover));
       color: white;
     }
     @media (max-width: 1024px) {
@@ -395,6 +390,25 @@ $conn->close();
 </head>
 <body>
 
+  <div class="menu-lateral">
+    <div class="logo" style="margin-bottom: 32px; color: var(--cor-adm);"> GOTA VERMELHA ADM</div>
+    <a href="dashboard_adm.php" class="menu-item ativo">
+      <span>📊</span> Dashboard
+    </a>
+    <a href="novo_usuario.php" class="menu-item">
+      <span>👥</span> Usuários
+    </a>
+    <a href="registrar_doacao.php" class="menu-item">
+      <span>🩸</span> Doações
+    </a>
+    <a href="adicionar_bolsas.php" class="menu-item">
+      <span>📦</span> Estoque
+    </a>
+    <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--cor-borda);">
+    <a href="logout_adm.php" class="menu-item">
+      <span>🚪</span> Sair
+    </a>
+  </div>
 
   <div class="conteudo-principal">
     <div class="container" id="dashboard">
@@ -406,7 +420,7 @@ $conn->close();
             <div style="font-weight: 600; font-size: 14px;">Administrador</div>
             <div style="font-size: 12px; opacity: 0.9;"><?php echo htmlspecialchars($_SESSION['adm_email'] ?? 'admin@gotavermelha.com'); ?></div>
           </div>
-          <button class="btn btn-sair" onclick="window.location.href='logout.php'">Sair</button>
+          <button class="btn btn-sair" onclick="window.location.href='logout_adm.php'">Sair</button>
         </div>
       </div>
 
@@ -414,7 +428,7 @@ $conn->close();
       <div class="card" style="grid-column: 1 / -1;">
         <h2>📈 Estatísticas do Sistema</h2>
         <div class="info-painel">
-          <div class="info-card" style="background: linear-gradient(135deg, var(--cor-adm), #7C3AED); color: white;">
+          <div class="info-card" style="background: linear-gradient(135deg, var(--cor-adm), var(--cor-adm-hover)); color: white;">
             <h3>Total de Usuários</h3>
             <p><?php echo $stats['total_usuarios'] ?? 0; ?></p>
           </div>
@@ -437,21 +451,46 @@ $conn->close();
         </div>
       </div>
 
-      <!-- ESTOQUE -->
+      <!-- ESTOQUE - CORREÇÃO: Mostra todos os 8 tipos -->
       <div class="card" style="grid-column: 1 / -1;">
         <div class="section-title">
           <h2>📦 Controle de Estoque</h2>
           <div>
-            <button class="btn btn-primary" onclick="alert('Funcionalidade em desenvolvimento')">
+            <button class="btn btn-primary" onclick="window.location.href='adicionar_bolsas.php'">
               <span>➕</span> Adicionar Bolsas
             </button>
-            <button class="btn btn-alerta" onclick="alert('Funcionalidade em desenvolvimento')" style="margin-left: 8px;">
+            <button class="btn btn-alerta" onclick="distribuir()" style="margin-left: 8px;">
               <span>📤</span> Distribuir
             </button>
           </div>
         </div>
         <div class="estoque-grid">
-          <?php foreach ($estoque_detalhado as $item): ?>
+          <?php
+      
+          $tipos_sanguineos = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+          $estoque_completo = [];
+    
+          foreach ($tipos_sanguineos as $tipo) {
+            $estoque_completo[$tipo] = [
+              'tipo_sangue' => $tipo,
+              'qtd_bolsas' => 0,
+              'volume_litros' => 0,
+              'proxima_validade' => null
+            ];
+          }
+          
+      
+          foreach ($estoque_detalhado as $item) {
+            if (isset($estoque_completo[$item['tipo_sangue']])) {
+              $estoque_completo[$item['tipo_sangue']] = $item;
+            }
+          }
+          
+
+          ksort($estoque_completo);
+          ?>
+          
+          <?php foreach ($estoque_completo as $item): ?>
             <div class="bolsa-item">
               <div class="bolsa-tipo"><?php echo $item['tipo_sangue']; ?></div>
               <div class="bolsa-qtd"><?php echo $item['qtd_bolsas']; ?></div>
@@ -459,9 +498,15 @@ $conn->close();
               <div class="bolsa-volume">
                 <strong><?php echo number_format($item['volume_litros'], 2, ',', '.'); ?> L</strong>
               </div>
-              <div style="font-size: 10px; color: var(--cor-erro); margin-top: 8px;">
-                Vence: <?php echo date('d/m/Y', strtotime($item['proxima_validade'])); ?>
-              </div>
+              <?php if ($item['proxima_validade']): ?>
+                <div style="font-size: 10px; color: var(--cor-erro); margin-top: 8px;">
+                  Vence: <?php echo date('d/m/Y', strtotime($item['proxima_validade'])); ?>
+                </div>
+              <?php else: ?>
+                <div style="font-size: 10px; color: var(--cor-texto-secundario); margin-top: 8px;">
+                  Sem estoque
+                </div>
+              <?php endif; ?>
             </div>
           <?php endforeach; ?>
         </div>
@@ -471,7 +516,7 @@ $conn->close();
       <div class="card" style="grid-column: 1 / -1;">
         <div class="section-title">
           <h2>👥 Gerenciamento de Usuários</h2>
-          <button class="btn btn-primary" onclick="alert('Funcionalidade em desenvolvimento')">
+          <button class="btn btn-primary" onclick="window.location.href='novo_usuario.php'">
             <span>➕</span> Novo Usuário
           </button>
         </div>
@@ -514,7 +559,7 @@ $conn->close();
       <div class="card" style="grid-column: 1 / -1;">
         <div class="section-title">
           <h2>🩸 Histórico de Doações</h2>
-          <button class="btn btn-primary" onclick="alert('Funcionalidade em desenvolvimento')">
+          <button class="btn btn-primary" onclick="window.location.href='registrar_doacao.php'">
             <span>➕</span> Registrar Doação
           </button>
         </div>
@@ -557,64 +602,55 @@ $conn->close();
 
       <!-- AGENDAMENTOS -->
       <div class="card" style="grid-column: 1 / -1;">
-        <div class="section-title">
-          <h2>📅 Agendamentos</h2>
-          <div>
-            <button class="btn btn-sucesso" onclick="alert('Funcionalidade em desenvolvimento')">
-              <span>✅</span> Confirmar Todos
-            </button>
-            <button class="btn btn-alerta" onclick="alert('Funcionalidade em desenvolvimento')" style="margin-left: 8px;">
-              <span>📧</span> Notificar
-            </button>
-          </div>
-        </div>
-        <div style="overflow-x: auto;">
-          <table class="tabela-historico">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Usuário</th>
-                <th>Unidade</th>
-                <th>Data/Hora</th>
-                <th>Status</th>
-                <th>Criado em</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php foreach ($todos_agendamentos as $ag): ?>
-                <tr>
-                  <td><?php echo $ag['id']; ?></td>
-                  <td><strong><?php echo htmlspecialchars($ag['usuario']); ?></strong></td>
-                  <td><?php echo htmlspecialchars($ag['unidade']); ?></td>
-                  <td><?php echo date('d/m/Y', strtotime($ag['data'])) . ' às ' . $ag['hora']; ?></td>
-                  <td>
-                    <span class="badge badge-<?php echo strtolower($ag['status']); ?>">
-                      <?php echo ucfirst($ag['status']); ?>
-                    </span>
-                  </td>
-                  <td><?php echo date('d/m/Y H:i', strtotime($ag['criado_em'])); ?></td>
-                  <td class="acoes">
-                    <?php if ($ag['status'] === 'PENDENTE'): ?>
-                      <button class="btn btn-sucesso" onclick="confirmarAgendamento(<?php echo $ag['id']; ?>)">Confirmar</button>
-                    <?php endif; ?>
-                    <button class="btn btn-erro" onclick="cancelarAgendamento(<?php echo $ag['id']; ?>)">Cancelar</button>
-                  </td>
-                </tr>
-              <?php endforeach; ?>
-            </tbody>
-          </table>
-        </div>
-      </div>
+    <div class="section-title">
+      <h2>📅 Agendamentos</h2>
+    </div>
+    <div style="overflow-x: auto;">
+      <table class="tabela-historico">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Usuário</th>
+            <th>Unidade</th>
+            <th>Data/Hora</th>
+            <th>Status</th>
+            <th>Criado em</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($todos_agendamentos as $ag): ?>
+            <tr>
+              <td><?php echo $ag['id']; ?></td>
+              <td><strong><?php echo htmlspecialchars($ag['usuario']); ?></strong></td>
+              <td><?php echo htmlspecialchars($ag['unidade']); ?></td>
+              <td><?php echo date('d/m/Y', strtotime($ag['data'])) . ' às ' . $ag['hora']; ?></td>
+              <td>
+                <span class="badge badge-<?php echo strtolower($ag['status']); ?>">
+                  <?php echo ucfirst($ag['status']); ?>
+                </span>
+              </td>
+              <td><?php echo date('d/m/Y H:i', strtotime($ag['criado_em'])); ?></td>
+              <td class="acoes">
+                <?php if ($ag['status'] === 'PENDENTE'): ?>
+                  <button class="btn btn-sucesso" onclick="confirmarAgendamento(<?php echo $ag['id']; ?>)">Confirmar</button>
+                <?php endif; ?>
+                <?php if ($ag['status'] !== 'CANCELADO' && $ag['status'] !== 'REALIZADO'): ?>
+                  <button class="btn btn-erro" onclick="cancelarAgendamento(<?php echo $ag['id']; ?>)">Cancelar</button>
+                <?php endif; ?>
+              </td>
+            </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
     </div>
   </div>
 
   <script>
-    function mostrarSecao(secao) {
-    
-      console.log('Mostrar seção:', secao);
+    function distribuir(){
+      window.location.href = 'distribuir.php';
     }
-
+    
     function editarUsuario(id) {
       if (confirm('Editar usuário #' + id + '?')) {
         window.location.href = 'editar_usuario.php?id=' + id;

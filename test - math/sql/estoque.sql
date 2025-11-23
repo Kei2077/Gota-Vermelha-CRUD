@@ -11,8 +11,15 @@ CREATE TABLE IF NOT EXISTS bolsas (
 INSERT INTO bolsas VALUES 
 ('A+',5,'2025-12-31'),('A-',2,'2025-12-31'),
 ('B+',3,'2025-12-15'),('O-',4,'2025-12-15'),
-('AB+',3,'2025-12-15');
+('AB+',3,'2025-12-15'),('O+',4,'2025-12-15');
 
+ALTER TABLE bolsas 
+ADD COLUMN id INT AUTO_INCREMENT PRIMARY KEY FIRST;
+ALTER TABLE bolsas 
+ADD INDEX idx_tipo_validade (tipo_sangue, data_validade);
+
+select * from bolsas;
+delete from bolsas;
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
