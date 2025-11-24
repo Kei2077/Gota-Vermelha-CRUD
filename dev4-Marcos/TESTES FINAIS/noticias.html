@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ESSENCIAL -->
+  <meta name="description" content="Locais de coleta de exames e doação de sangue em Mogi das Cruzes">
+  <title>Noticias</title>
+  <link rel="stylesheet" href="stylenoticias.css">
+</head>
+
+<body>
+  <header>
+    <nav>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="Locais de coleta.html">Locais de doação</a></li>
+        <li><a href="login.php">Login</a></li>
+      </ul>
+      <button 
+        class="mobile-menu" 
+        id="mobileMenu"
+        aria-label="Abrir menu de navegação" 
+        aria-expanded="false"
+        aria-controls="navLinks"
+      >☰</button>
+    </nav>
+  </header>
+  <section style="
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 25px;
+        background-color: #ffffff;
+        border-left: 6px solid var(--cor-primaria);
+        box-shadow: var(--sombra);
+        border-radius: 8px;
+        font-family: Arial, sans-serif;
+        color: var(--cor-texto);
+        ">
+        <h2 style="margin-top: 0; color: var(--cor-primaria);">
+            🩸 19/06/2025 Urgente: Bancos de sangue de Mogi e Suzano enfrentam falta de estoque dos tipos O e A
+        </h2>
+        <p style="font-size: 16px; line-height: 1.6;">
+            Com queda nas doações com a chegada do frio, 
+            <strong>hemocentros intensificam campanhas do Junho Vermelho.</strong> para estimular doações.
+        </p>
+
+        <!-- Botão estilizado -->
+        <a href="https://portalnews.com.br/cidades/2025/06/bancos-de-sangue-de-mogi-e-suzano-enfrentam-crise-com-estoques-zerados-para-tipos-o-e-a" style="
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 24px;
+            background-color: var(--cor-primaria);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        " onmouseover="this.style.backgroundColor='var(--cor-secundaria)'"
+            onmouseout="this.style.backgroundColor='var(--cor-primaria)'">
+            Ler notícia completa
+        </a>
+    </section>
+  
+  <footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>Gota Vermelha</h3>
+            <p>Salvando vidas através da solidariedade e do compromisso com a saúde da nossa comunidade.</p>
+        </div>
+        <div class="footer-section">
+            <h3>Informações</h3>
+            <ul>
+                <li>📍 Av. Principal, 123 - Centro</li>
+                <li>📞 (11) 3333-4000</li>
+                <li>📧 contato@gotavermelha.org.br</li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2025 Gota Vermelha. Todos os direitos reservados.</p>
+        <p>Site desenvolvido com ❤️</p>
+    </div>
+  </footer>
+
+  <script>
+    const mobileMenu = document.getElementById('mobileMenu');
+    const navLinks = document.getElementById('navLinks');
+    const body = document.body;
+
+    mobileMenu.addEventListener('click', () => {
+      const isOpen = navLinks.classList.toggle('active');
+      mobileMenu.setAttribute('aria-expanded', isOpen);
+      isOpen ? body.classList.add('menu-open') : body.classList.remove('menu-open');
+    });
+
+    
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('active');
+        mobileMenu.setAttribute('aria-expanded', false);
+        body.classList.remove('menu-open');
+      });
+    });
+
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && navLinks.classList.contains('active')) {
+        navLinks.classList.remove('active');
+        mobileMenu.setAttribute('aria-expanded', false);
+        body.classList.remove('menu-open');
+      }
+    });
+  </script>
+</body>
+</html>
