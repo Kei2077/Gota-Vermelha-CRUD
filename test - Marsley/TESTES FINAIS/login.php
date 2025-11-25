@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login – Gota Vermelha</title>
+  <link rel="stylesheet" href="stylelogin.css">
   <style>
     .alert {
       padding: 12px 16px;
