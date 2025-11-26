@@ -67,8 +67,10 @@ nav ul li a {
     text-decoration: none;
     font-weight: 500;
     transition: opacity 0.3s;
+    padding: 0.5rem 1rem; 
+    display: block; 
 }
-        
+       
 nav ul li a:hover {
     opacity: 0.8;
 }
